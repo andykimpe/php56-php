@@ -21,6 +21,8 @@
 %global _root_initddir    %{_initddir}
 %endif
 
+%global _scl_prefix /opt/andy
+
 # API/ABI check
 %global apiver      20131106
 %global zendver     20131226
