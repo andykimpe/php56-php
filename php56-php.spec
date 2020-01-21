@@ -41,10 +41,10 @@
 %global embed_version 5.6
 
 # Ugly hack. Harcoded values to avoid relocation.
-%global _httpd_mmn         %(cat %{_root_includedir}/httpd/.mmn 2>/dev/null || echo 0)
-%global _httpd_confdir     %{_root_sysconfdir}/httpd/conf.d
-%global _httpd_moddir      %{_libdir}/httpd/modules
-%global _root_httpd_moddir %{_root_libdir}/httpd/modules
+%global _httpd_mmn         %(cat /opt/andy/httpd24/root/%{_root_includedir}/httpd/.mmn 2>/dev/null || echo 0)
+%global _httpd_confdir     /opt/andy/httpd24/root/%{_root_sysconfdir}/httpd/conf.d
+%global _httpd_moddir      /opt/andy/httpd24/root/%{_libdir}/httpd/modules
+%global _root_httpd_moddir /opt/andy/httpd24/root/%{_root_libdir}/httpd/modules
 %if 0%{?fedora} >= 18 || 0%{?rhel} >= 7
 # httpd 2.4 values
 %global _httpd_apxs        %{_root_bindir}/apxs
@@ -52,9 +52,9 @@
 %global _httpd_contentdir  /usr/share/httpd
 %else
 # httpd 2.2 values
-%global _httpd_apxs        %{_root_sbindir}/apxs
-%global _httpd_modconfdir  %{_root_sysconfdir}/httpd/conf.d
-%global _httpd_contentdir  /var/www
+%global _httpd_apxs        /opt/andy/httpd24/root/%{_root_bindir}/apxs
+%global _httpd_modconfdir  /opt/andy/httpd24/root/%{_root_sysconfdir}/httpd/conf.modules.d
+%global _httpd_contentdir  /opt/andy/httpd24/root/var/www/html
 %endif
 
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_root_sysconfdir}/rpm; echo $d)
@@ -247,7 +247,7 @@ Patch301: php-5.6.0-oldpcre.patch
 # WIP
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, %{db_devel}
-BuildRequires: httpd-devel >= 2.0.46-1, pam-devel
+BuildRequires: httpd24-httpd-devel >= 2.0.46-1, pam-devel
 %if %{with_httpd2410}
 # to ensure we are using httpd with filesystem feature (see #1081453)
 BuildRequires: httpd-filesystem
@@ -275,7 +275,7 @@ BuildRequires: libtool-ltdl-devel
 %if %{with_dtrace}
 BuildRequires: systemtap-sdt-devel
 %endif
-Requires: httpd-mmn = %{_httpd_mmn}
+Requires: httpd24-httpd-mmn = %{_httpd_mmn}
 Provides: %{?scl_prefix}mod_php = %{version}-%{release}
 Requires: %{?scl_prefix}php-common%{?_isa} = %{version}-%{release}
 # For backwards-compatibility, require php-cli for the time being:
@@ -284,7 +284,7 @@ Requires: %{?scl_prefix}php-cli%{?_isa} = %{version}-%{release}
 %if %{with_httpd2410}
 Requires(pre): httpd-filesystem
 %else
-Requires(pre): httpd
+Requires(pre): httpd24-httpd
 %endif
 %if 0%{?fedora} >= 27 || 0%{?rhel} >= 8
 # httpd have threaded MPM by default
